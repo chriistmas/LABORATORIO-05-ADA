@@ -20,8 +20,21 @@ int max(int a, int b) {
 // Dynamic Programming solution for LCS
 int lcs_length(char *X, char *Y, int m, int n) {
     int **dp = (int **)malloc((m + 1) * sizeof(int *));
+    if (dp == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return -1;
+    }
+    
     for (int i = 0; i <= m; i++) {
         dp[i] = (int *)calloc(n + 1, sizeof(int));
+        if (dp[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < i; j++) {
+                free(dp[j]);
+            }
+            free(dp);
+            return -1;
+        }
     }
     
     // Build the LCS table in bottom-up fashion
@@ -102,10 +115,16 @@ int main() {
     
     printf("=== Longest Common Subsequence (LCS) ===\n");
     printf("Enter first sequence: ");
-    scanf("%s", X);
+    if (scanf("%999s", X) != 1) {
+        printf("Invalid input.\n");
+        return 1;
+    }
     
     printf("Enter second sequence: ");
-    scanf("%s", Y);
+    if (scanf("%999s", Y) != 1) {
+        printf("Invalid input.\n");
+        return 1;
+    }
     
     int m = strlen(X);
     int n = strlen(Y);

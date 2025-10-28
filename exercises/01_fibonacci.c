@@ -14,6 +14,10 @@ long long fibonacci_dp(int n) {
     if (n <= 1) return n;
     
     long long *dp = (long long *)malloc((n + 1) * sizeof(long long));
+    if (dp == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return -1;
+    }
     dp[0] = 0;
     dp[1] = 1;
     
@@ -46,7 +50,10 @@ int main() {
     
     printf("=== Fibonacci Sequence Calculator ===\n");
     printf("Enter the position n: ");
-    scanf("%d", &n);
+    if (scanf("%d", &n) != 1) {
+        printf("Invalid input.\n");
+        return 1;
+    }
     
     if (n < 0) {
         printf("Please enter a non-negative integer.\n");

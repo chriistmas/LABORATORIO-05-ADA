@@ -18,8 +18,21 @@ int max(int a, int b) {
 // Dynamic Programming solution for 0/1 Knapsack
 int knapsack(int W, int weights[], int values[], int n) {
     int **dp = (int **)malloc((n + 1) * sizeof(int *));
+    if (dp == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return -1;
+    }
+    
     for (int i = 0; i <= n; i++) {
         dp[i] = (int *)malloc((W + 1) * sizeof(int));
+        if (dp[i] == NULL) {
+            fprintf(stderr, "Memory allocation failed\n");
+            for (int j = 0; j < i; j++) {
+                free(dp[j]);
+            }
+            free(dp);
+            return -1;
+        }
     }
     
     // Build table dp[][] in bottom-up manner
@@ -69,10 +82,20 @@ int main() {
     
     printf("=== 0/1 Knapsack Problem ===\n");
     printf("Enter number of items: ");
-    scanf("%d", &n);
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        printf("Invalid number of items.\n");
+        return 1;
+    }
     
     int *values = (int *)malloc(n * sizeof(int));
     int *weights = (int *)malloc(n * sizeof(int));
+    
+    if (values == NULL || weights == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        free(values);
+        free(weights);
+        return 1;
+    }
     
     printf("Enter values of items:\n");
     for (int i = 0; i < n; i++) {

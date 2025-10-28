@@ -98,9 +98,16 @@ int main() {
     
     printf("=== Coin Change Problem ===\n");
     printf("Enter number of coin denominations: ");
-    scanf("%d", &n);
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        printf("Invalid number of denominations.\n");
+        return 1;
+    }
     
     int *coins = (int *)malloc(n * sizeof(int));
+    if (coins == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
     
     printf("Enter coin denominations:\n");
     for (int i = 0; i < n; i++) {

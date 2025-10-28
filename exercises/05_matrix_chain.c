@@ -57,14 +57,15 @@ int matrix_chain_order(int dimensions[], int n) {
 }
 
 // Function to print optimal parenthesization
-void print_optimal_parens(int i, int j, int **s, char *name) {
+void print_optimal_parens(int i, int j, int **s, int *index) {
     if (i == j) {
-        printf("%c%d", *name, i);
-        (*name)++;
+        printf("%c", 'A' + (*index)++);
     } else {
         printf("(");
-        print_optimal_parens(i, s[i][j], s, name);
-        print_optimal_parens(s[i][j] + 1, j, s, name);
+        int saved_index = *index;
+        print_optimal_parens(i, s[i][j], s, index);
+        *index = saved_index + (s[i][j] - i + 1);
+        print_optimal_parens(s[i][j] + 1, j, s, index);
         printf(")");
     }
 }
@@ -99,8 +100,8 @@ int matrix_chain_order_with_parens(int dimensions[], int n) {
     int result = dp[0][n-1];
     
     printf("\nOptimal Parenthesization: ");
-    char name = 'A';
-    print_optimal_parens(0, n-1, s, &name);
+    int index = 0;
+    print_optimal_parens(0, n-1, s, &index);
     printf("\n");
     
     // Free memory
@@ -119,9 +120,16 @@ int main() {
     
     printf("=== Matrix Chain Multiplication ===\n");
     printf("Enter number of matrices: ");
-    scanf("%d", &n);
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        printf("Invalid number of matrices.\n");
+        return 1;
+    }
     
     int *dimensions = (int *)malloc((n + 1) * sizeof(int));
+    if (dimensions == NULL) {
+        fprintf(stderr, "Memory allocation failed\n");
+        return 1;
+    }
     
     printf("\nEnter dimensions (for n matrices, enter n+1 dimensions):\n");
     printf("Example: For matrices A(10x20), B(20x30), C(30x40)\n");
